@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+</head>
+<body>
+    <h1>Create User Profile</h1>
+    <form action="/" method="post">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" value="Duydepzai" required><br>
+  
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required><br>
+  
+      <label for="address">Address:</label>
+      <input type="text" id="address" name="address" value="Hanoi, Vietnam" required><br>
+  
+      <label for="birthday">Birthday:</label>
+      <input type="date" id="birthday" name="birthday" value="2004-10-30" required><br>
+  
+      <label for="id">ID:</label>
+      <input type="text" id="id" name="id" value="030205000354" required><br>
+  
+      <label for="avatarURL">Avatar URL:</label>
+      <input type="url" id="avatarURL" name="avatarURL" value="https://i.pinimg.com/736x/b1/ed/1e/b1ed1e4a474da39a21fd9979ced4746a.jpg" required><br>
+  
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" value="duydepzai@2k4.gmail.com" required><br>
+  
+      <label for="gender">Gender:</label>
+      <select id="gender" name="gender" required>
+        <option value="male" selected>Male</option>
+        <option value="female">Female</option>
+        <option value="non-binary">Non-Binary</option>
+      </select><br>
+  
+      <label for="phone_number">Phone Number:</label>
+      <input type="tel" id="phone_number" name="phone_number" value="0374418204" required><br>
+  
+      <button type="submit" id="signup">Create Profile</button>
+    </form>
+  <script src="bundle.js"></script>
+  <script src="signup.js"></script>
+</body>
+</html>
