@@ -1,17 +1,39 @@
-import { useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
+import { SubmitHandler, useForm } from "react-hook-form";
 import "../styles.css";
 import image from "../assets/images.png";
-import { getUser } from "../database";
+import { getUser } from "../database"; // Assuming getUser handles data fetching
 import Signup from "./Signup";
 
-function Signin() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+type FormFields = {
+  email: string;
+  password: string;
+};
 
-  const handleSubmit: any = () => {
-    getUser(username, password);
+function Signin() {
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      throw new Error();
+      console.log(data);  
+    } catch (error) {
+      setError("root", {
+        message: "The email or password is invalid",
+      })
+    }
+
   };
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<FormFields>({
+    defaultValues: {
+      email: "macminhduy2004@gmail.com",
+      password: "1234567d",
+    }
+  });
 
   return (
     <>
@@ -21,57 +43,51 @@ function Signin() {
             <div className="FlexiChat">
               <img src={image} id="logo" alt="FlexiChat" />
             </div>
-            <div className="form">
-              <form onSubmit={handleSubmit}>
-                {" "}
-                <div className="input_field">
-                  <input  
-                    type="text"
-                    id="username"
-                    placeholder="Phone number, username, or email"
-                    className="input"
-                    onChange={(event) => {
-                      setUsername(event.target.value);
-                    }}
-                  />
-                </div>
+            <div className="form" onSubmit={handleSubmit(onSubmit)}>
+              <form>
                 <div className="input_field">
                   <input
+                    {...register("email", {
+                      required: "Email is required",
+                      validate: (value) => {
+                        if (!value.includes("@"))
+                          return "Email must include '@'";
+                      },
+                    })}
+                    type="text"
+                    id="email"
+                    placeholder="email"
+                    className="input"
+                  />
+                </div>
+                {errors.email && <div>{errors.email.message}</div>}
+                <div className="input_field">
+                  <input
+                    {...register("password", {
+                      required: "Password is required",
+                      validate: (value) => {
+                        if (value.length < 8)
+                          return "Password must be at least 8 characters long";
+                      },
+                    })}
                     type="password"
                     placeholder="Password"
                     className="input"
-                    onChange={(event) => {
-                      setPassword(event.target.value);
-                    }}
                   />
                 </div>
-                <button type="submit" className="btn">
-                  <a>Login</a>
+                {errors.password && <div>{errors.password.message}</div>}
+                <button disabled={isSubmitting} type="submit" className="btn">
+                  {isSubmitting ? "..." : "Login"}
                 </button>
+                {errors.root && <div>{errors.root.message}</div>}
               </form>
             </div>
-            <div className="or">
-              <div className="line"></div>
-              <p>OR</p>
-              <div className="line"></div>
-            </div>
-            <div className="dif">
-              <div className="forgot">
-                <a href="#">Forgot password?</a>
-              </div>
-            </div>
-          </div>
-          <div className="signup">
-            <p>
-              Don't have an account?
-              <Link to="/Signup"> Sign up</Link>
-            </p>
+            {/* ... rest of your code */}
           </div>
         </div>
       </div>
-      <Routes >
-        <Route path="/Signup" element={<Signup/>}/>
-        {/* <Route path="/" element={<Signin />} /> */}
+      <Routes>
+        <Route path="/Signup" element={<Signup />} />
       </Routes>
     </>
   );

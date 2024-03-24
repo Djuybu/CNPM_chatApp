@@ -40,18 +40,18 @@ getDocs(userRef)
     console.log(error);
   });
 
-export const getUser = async (username: string, password: string) => {
+export const getUser = async (email: string, password: string) => {
   console.log("queriing");
   const q = await query(
     userRef,
-    where("Name", "==", username),
-    where("Password", "==", password)
+    where("email", "==", email),
+    where("password", "==", password)
   );
 
   onSnapshot(q, (snapshot) => {
     console.log(snapshot.docs);
-    // let user = snapshot.docs[0];
-    // console.log(user);
+    let user = snapshot.docs[0];
+    console.log(user);
   });
 };
 

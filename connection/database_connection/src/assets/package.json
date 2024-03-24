@@ -1,0 +1,19 @@
+{
+  "name": "appsetting",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  },
+  "dependencies": {
+    "install": "^0.13.0",
+    "material-design-icons": "^3.0.1",
+    "npm": "^10.5.0"
+  }
+}
