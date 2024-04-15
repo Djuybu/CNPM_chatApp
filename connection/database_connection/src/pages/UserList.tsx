@@ -1,26 +1,39 @@
-import userImage from "../assets/bc3164193f40e047fc9ba13860c74b5a.webp"
-import sandWorm from "../assets/sandworm.jpg"
+import userImage from "../assets/bc3164193f40e047fc9ba13860c74b5a.webp";
+import Group from "../assets/group.png";
+import RoomProps from "../props/RoomProps";
+import { user } from "../App";
+import { useState } from "react";
+import { socket } from "./Chat";
 
-function UserList () {
-    return (
-        <>
-          <div className="user_list">
-            <div className="user_bar">
-              <img src={userImage} alt="" />
-              <div className="user_name">Mac Minh Duy</div>
-            </div>
-            <div className="search_bar">
-              <img src="../assets/search.png" alt="" />
-              <input type="text" name="" id="" placeholder="Search for user" />
-            </div>
-            <div className="room_bar">
-              <img src={sandWorm} alt="" />
-              <div className="user_name">Sandworm</div>
-              <div className="status">Online</div>
-            </div>
-          </div>
-        </>
-    );
+interface UserListProps {
+  roomID: string;
+  onRoomIDChange: (newRoomID: string) => void;
 }
 
-export default UserList
+function UserList({ roomID, onRoomIDChange }: UserListProps) {
+  const handleChangeRoom = (newRoomID: string) => {
+    onRoomIDChange(newRoomID);
+    socket.emit("join", newRoomID);
+  };
+
+  const [rooms, setRooms] = useState([
+    { name: "Lmao", avatar: Group, id: "177013" },
+  ]);
+  return (
+    <>
+      <div className="user_list">
+        <div className="user_bar">
+          <img src={userImage} alt="" />
+          <div className="user_name">{user.getUsername()}</div>
+        </div>
+        <div className="search_bar">
+          <img src="../assets/search.png" alt="" />
+          <input type="text" name="" id="" placeholder="Search for user" />
+        </div>
+        <RoomProps room={rooms} onRoomIDChange={handleChangeRoom} />
+      </div>
+    </>
+  );
+}
+
+export default UserList;

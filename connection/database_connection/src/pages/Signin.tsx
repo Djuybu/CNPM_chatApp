@@ -1,8 +1,10 @@
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, useNavigate, Link } from "react-router-dom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import "../styles.css";
 import image from "../assets/images.png";
 import { getUser } from "../database"; // Assuming getUser handles data fetching
+import { User } from "../User";
+import { user } from "../App";
 import Signup from "./Signup";
 
 type FormFields = {
@@ -11,17 +13,26 @@ type FormFields = {
 };
 
 function Signin() {
+  const nav = useNavigate();
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      throw new Error();
-      console.log(data);  
+      // Simulate asynchronous behavior (replace with your actual getUser call)
+      const userData = await getUser(data);
+
+      if (!userData) {
+        throw new Error(); // More specific error message
+      }
+
+      user.fetchData(userData);
+      console.log(user);
+
+      //navigate to AccountSettings
+      nav("Chat");
     } catch (error) {
       setError("root", {
-        message: "The email or password is invalid",
-      })
+        message: "The email or password is invalid", // Or a more specific error message based on the error object
+      });
     }
-
   };
   const {
     register,
@@ -31,8 +42,8 @@ function Signin() {
   } = useForm<FormFields>({
     defaultValues: {
       email: "macminhduy2004@gmail.com",
-      password: "1234567d",
-    }
+      password: "123456789",
+    },
   });
 
   return (

@@ -10,6 +10,7 @@ import {
   query,
   where,
   onSnapshot,
+  updateDoc,
 } from "firebase/firestore";
 
 // Your web app's Firebase configuration
@@ -40,24 +41,49 @@ getDocs(userRef)
     console.log(error);
   });
 
-export const getUser = async (email: string, password: string) => {
-  console.log("queriing");
-  const q = await query(
-    userRef,
-    where("email", "==", email),
-    where("password", "==", password)
-  );
+export const getUser: any = async (data: any) => {
+  try {
+    const q = query(
+      userRef,
+      where("email", "==", data.email),
+      where("password", "==", data.password)
+    );
 
-  onSnapshot(q, (snapshot) => {
-    console.log(snapshot.docs);
-    let user = snapshot.docs[0];
-    console.log(user);
-  });
-};
+    const snapshot = await getDocs(q); // Use getDocs for single retrieval
 
+    if (snapshot.empty) {
+      // Handle no matching documents (user not found)
+      return null;
+    }
+
+    const user = snapshot.docs[0].data(); // Assuming single document
+    return { ...user, id: snapshot.docs[0].id }; // Return object with id
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    // Handle other potential errors
+    return null; // Or throw an error for handling at a higher level
+  }
+}
 export const addUser = (value: object) => {  
   console.log(value);
   addDoc(userRef, value)
-  
 };
-  
+
+export const changeUserInfo = async (user: object, username: string) => {
+  try {
+      const q = query(userRef, where("username", "==", username));
+      const querySnapshot = await getDocs(q);
+      
+      querySnapshot.forEach(async (doc) => {
+          // Cập nhật thông tin người dùng nếu tìm thấy username là "MMD"
+          await updateDoc(doc.ref, user);
+          console.log("Thông tin người dùng đã được cập nhật thành công!");
+      });
+
+      if (querySnapshot.empty) {
+          console.log("Không tìm thấy người dùng có username là 'MMD'");
+      }
+  } catch (error) {
+      console.error("Lỗi khi cập nhật thông tin người dùng:", error);
+  }
+};

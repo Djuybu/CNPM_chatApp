@@ -7,6 +7,7 @@ import "../assets/userStyle.css";
 import profilePng from "../assets/profile.png";
 import viteSvg from "../assets/javascript.svg";
 import "../assets/responsive.css";
+import { changeUserInfo } from "../database";
 
 type AccountForm = {
   username: string;
@@ -18,10 +19,20 @@ type AccountForm = {
   birthday: string;
 };
 
+let username: string = "MMD";
+
 function AccountSetting() {
   const onSubmit: SubmitHandler<AccountForm> = (data) => {
     //gửi dữ liệu lên csdl
     console.log(data);
+    try {
+      changeUserInfo(data, (username = "MMD"));
+      console.log("Dữ liệu đã được cập nhật thành công!");
+      // Thực hiện các hành động khác sau khi cập nhật thành công (nếu cần)
+    } catch (error) {
+      console.error("Lỗi khi cập nhật dữ liệu:", error);
+      // Xử lý lỗi nếu có
+    }
   };
 
   const [isEditing, setIsEditing] = useState(false);
@@ -194,11 +205,7 @@ function AccountSetting() {
 
                 <li className="sex">
                   <h1 className="label">Username: </h1>
-                  {isEditing ? (
-                    <input type="text" name="" />
-                  ) : (
-                    <span className="info">MMD</span>
-                  )}
+                  <span className="info">MMD</span>
                 </li>
 
                 <li className="sex">
