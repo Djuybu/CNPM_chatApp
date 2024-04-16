@@ -1,13 +1,8 @@
 import { useState } from "react";
-import "../assets/style.css";
 import { SubmitHandler, useForm } from "react-hook-form";
-import downloadJpg from "../assets/download.jpg";
-import iconPng from "../assets/download.png";
 import "../assets/userStyle.css";
-import profilePng from "../assets/profile.png";
-import viteSvg from "../assets/javascript.svg";
-import "../assets/responsive.css";
 import { changeUserInfo } from "../database";
+import 'bootstrap';
 
 type AccountForm = {
   username: string;
@@ -18,9 +13,10 @@ type AccountForm = {
   gender: string;
   birthday: string;
 };
-
-let username: string = "MMD";
-
+let username = "MMD";
+let password = "12345678";
+let email = "vnu@uet";
+let phone = "0123456789";
 function AccountSetting() {
   const onSubmit: SubmitHandler<AccountForm> = (data) => {
     //gửi dữ liệu lên csdl
@@ -43,191 +39,96 @@ function AccountSetting() {
     formState: { errors },
   } = useForm<AccountForm>();
   return (
-    <>
-      <span className="mainBg"></span> {/* Use className instead of class */}
-      <div className="container">
-        {/* Header/Navbar */}
-        <header>
-          <div className="brandLogo">
-            <figure>
-              <img
-                src={viteSvg} // Adjust path if needed
-                alt="logo"
-                width="40px"
-                height="40px"
-              />
-            </figure>
-            <span>UserProfile</span>
-          </div>
-        </header>
-
-        {/* User Main-Profile */}
-        <section className="userProfile card">
-          <div className="profile">
-            <figure>
-              <img
-                src={profilePng} // Adjust path if needed
-                alt="profile"
-                width="250px"
-                height="250px"
-              />
-            </figure>
-          </div>
-        </section>
-
-        <section className="work_skills card">
-          {/* Edu */}
-          <div className="work">
-            <h1 className="heading">Education</h1>
-            <div className="primary">
-              <h1>Đại học Công nghệ</h1>
-              <span></span>
-              <p>144 Xuân Thủy, Cầu Giấy, Hà Nội</p>
+      <>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"
+        />
+        <body>
+        <div className="container light-style flex-grow-1 container-p-y">
+          <h4 className="font-weight-bold py-3 mb-4">
+            Account settings
+          </h4>
+          <div className="card overflow-hidden">
+            <div className="row no-gutters row-bordered row-border-light">
+              <div className="col-md-3 pt-0">
+                <div className="list-group list-group-flush account-settings-links">
+                  <a className="list-group-item list-group-item-action active" data-toggle="list"
+                     href="#account-general">General</a>
+                  <a className="list-group-item list-group-item-action" data-toggle="list"
+                     href="#account-change-password">Change password</a>
+                </div>
+              </div>
+              <div className="col-md-9">
+                <div className="tab-content">
+                  <div className="tab-pane fade active show" id="account-general">
+                    <div className="card-body media align-items-center">
+                      <img src=""
+                           alt
+                           className="d-block ui-w-80"/>
+                      <div className="media-body ml-4">
+                        <label className="btn btn-outline-primary">
+                          Upload new photo
+                          <input type="file" className="account-settings-fileinput"/>
+                        </label> &nbsp;
+                        <button type="button" className="btn btn-default md-btn-flat">Reset</button>
+                        <div className="text-light small mt-1">Allowed JPG, GIF or PNG. Max size of 800K</div>
+                      </div>
+                    </div>
+                    <hr className="border-light m-0"/>
+                    <div className="card-body">
+                      <div className="form-group">
+                        <label className="form-label">Username</label>
+                        <input type="text" className="form-control mb-1" value={username}/>
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Change Password</label>
+                        <input type="text" className="form-control" value={password}/>
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">E-mail</label>
+                        <input type="text" className="form-control mb-1" value={email}/>
+                        <div className="alert alert-warning mt-3">
+                          <br/>
+                          <strong>Your email is not confirmed.</strong>
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Phone</label>
+                        <input type="text" className="form-control" value={phone}/>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="tab-pane fade" id="account-change-password">
+                    <div className="card-body pb-2">
+                      <div className="form-group">
+                        <label className="form-label">Current password</label>
+                        <input type="password" className="form-control"/>
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">New password</label>
+                        <input type="password" className="form-control"/>
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Repeat new password</label>
+                        <input type="password" className="form-control"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="secondary">
-              <h1>Khoa Công nghệ thông tin</h1>
-              <span></span>
-              <p>
-                Phòng 301, Nhà A5, Đại học Công nghệ, 144 Xuân Thủy, Cầu Giấy,
-                Hà Nội
-              </p>
-            </div>
           </div>
-        </section>
+          <div className="text-right mt-3">
+            <button type="submit" className="btn btn-primary">Save changes</button>
+            &nbsp;
+            <button type="button" className="btn btn-default">Cancel</button>
 
-        {/* User Details Sections */}
-        <section className="userDetails card">
-          <div className="userName">
-            <h1 className="name">Test</h1>
-            <div className="map">
-              <i className="ri-map-pin-fill ri"></i>
-              <span>VietNam</span>
-            </div>
-            <p>Test IT</p>
           </div>
+        </div>
 
-          <div className="rank">
-            <h1 className="heading">Rankings</h1>
-            <div className="rating">
-              <i className="ri-star-fill rate"></i>
-              <i className="ri-star-fill rate"></i>
-              <i className="ri-star-fill rate"></i>
-              <i className="ri-star-fill rate"></i>
-              <i className="ri-star-fill rate underrate"></i>
-            </div>
-          </div>
-        </section>
-
-        <section className="about_card card">
-          <div className="tabs">
-            <ul>
-              <li className="about active">
-                <i className="ri-user-3-fill ri"></i>
-                <span>About</span>
-              </li>
-            </ul>
-          </div>
-
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="contact_Info">
-              {isEditing ? (
-                <button
-                  type="submit"
-                  onClick={() => {
-                    setIsEditing(false);
-                  }}
-                >
-                  Save changes
-                </button>
-              ) : (
-                <button
-                  onClick={() => {
-                    setIsEditing(true);
-                  }}
-                >
-                  Edit your profile
-                </button>
-              )}
-              <h1 className="heading">Contact Information</h1>
-              <ul>
-                <li className="phone">
-                  <h1 className="label">Phone:</h1>
-                  {isEditing ? (
-                    <input
-                      {...register("phone", {
-                        required: "Phone number is required",
-                      })}
-                    />
-                  ) : (
-                    <span className="info">0374418204</span>
-                  )}
-                </li>
-                {errors.phone && <div>{errors.phone.message}</div>}
-                <li className="address">
-                  <h1 className="label">Address:</h1>
-                  {isEditing ? (
-                    <input {...register("address")} />
-                  ) : (
-                    <span className="info">Somewhere in Hanoi</span>
-                  )}
-                </li>
-                <li className="email">
-                  <h1 className="label">E-mail:</h1>
-                  {isEditing ? (
-                    <input {...register("email")} />
-                  ) : (
-                    <span className="info">vnu@uet</span>
-                  )}
-                </li>
-              </ul>
-            </div>
-
-            <div className="heading">
-              <h1 className="heading">Basic Information</h1>
-              <ul>
-                <li className="birthday">
-                  <h1 className="label">Birthday:</h1>
-                  {isEditing ? (
-                    <input {...register("birthday")} />
-                  ) : (
-                    <span className="info">2004</span>
-                  )}
-                </li>
-
-                <li className="sex">
-                  <h1 className="label">Gender:</h1>
-                  {isEditing ? (
-                    <input type="text" name="" />
-                  ) : (
-                    <span className="info">Male</span>
-                  )}
-                </li>
-
-                <li className="sex">
-                  <h1 className="label">Username: </h1>
-                  <span className="info">MMD</span>
-                </li>
-
-                <li className="sex">
-                  <h1 className="label">Password:</h1>
-                  {isEditing ? (
-                    <input type="password" name="" value={12345678} />
-                  ) : (
-                    <input
-                      type="password"
-                      name=""
-                      id=""
-                      value={12345678}
-                      disabled
-                    />
-                  )}
-                </li>
-              </ul>
-            </div>
-          </form>
-        </section>
-      </div>
-    </>
+        </body>
+      </>
   );
 }
 
