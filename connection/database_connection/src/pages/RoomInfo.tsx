@@ -3,14 +3,19 @@ import bell from "../assets/bell.png";
 import officePin from "../assets/office-push-pin.png";
 import pallete from "../assets/palette.png";
 import group from "../assets/group.png";
+import { Room } from "../class/Room";
+import { RootState } from "../state";
+import { useSelector } from "react-redux";
 
 function RoomInfo() {
+  const activeRoom: Room = useSelector(
+    (state: RootState) => state.activeRoom.activeRoom
+  );
   return (
     <>
       <div className="room_info">
-        <img src="../assets/sandworm.jpg" alt="" />
-        <div className="room_name">Sandworm</div>
-        <div className="active">All members are active</div>
+        <img src={`${activeRoom.getAvatar()}`} alt="" />
+        <div className="room_name">{activeRoom.getRoomName()}</div>
         <div className="button_bar">
           <div className="button_group">
             <img src={search} alt="" />

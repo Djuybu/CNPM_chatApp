@@ -6,15 +6,20 @@ class User {
     private birthday: string = "",
     private gender: string = "",
     private phone: string = "",
-    private email: string = ""
+    private email: string = "",
+    private id: string = ""
   ) {}
+
+  public getId(): string {
+    return this.id;
+  }
 
   public getUsername(): string {
     return this.username;
   }
 
   public getPassword(): string {
-    return this.password; // Consider hashing password before returning for security reasons
+    return this.password;
   }
 
   public getAddress(): string {
@@ -37,14 +42,16 @@ class User {
     return this.email;
   }
 
-  // Setters (consider adding validation logic as needed)
   public setUsername(username: string): void {
     this.username = username;
   }
 
+  public setId(id: string): void {
+    this.id = id;
+  }
+
   public setPassword(password: string): void {
-    // Hash the password before setting it (e.g., using a suitable hashing library)
-    this.password = password; // Replace with your password hashing function
+    this.password = password;
   }
 
   public setAddress(address: string): void {
@@ -74,7 +81,8 @@ class User {
     this.birthday = data.birthday;
     this.email = data.email;
     this.gender = data.gender;
-    this.phone;
+    this.phone = data.phone;
+    this.id = data.id;
   }
 }
 

@@ -7,16 +7,18 @@ const ChatProps = (props: any) => {
   return (
     <>
       {chats.map((chat: any) => {
-        if (chat.sender !== user.getUsername()) {
+        // console.log(chat);
+
+        if (chat.senderId !== user.getId()) {
           return (
             <div className="chat_received">
-              <div className="data">{chat.content}</div>
+              <div className="data">{chat.textContent}</div>
             </div>
           );
         } else {
           return (
             <div className="chat_sent">
-              <div className="data">{chat.content}</div>
+              <div className="data">{chat.textContent}</div>
             </div>
           );
         }

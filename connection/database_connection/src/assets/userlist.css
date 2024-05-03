@@ -233,3 +233,19 @@
     border-radius: 40px;
     background-color: rgb(194, 194, 194);
 }
+
+.contact_prop {
+    display: flex;
+    padding: 5px;
+}
+
+.contact_prop img {
+    width: 30%;
+    height: 30%;
+}
+
+.contact_prop div {
+    font-size: 20px;
+    font-weight: 500;
+}
+

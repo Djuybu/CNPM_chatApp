@@ -1,4 +1,4 @@
-import { socket } from "../pages/Chat";
+import { socket } from "../pages/ChatPage";
 
 interface RoomProps {
   room: any[]; // Assuming `rooms` is an array of objects
@@ -15,6 +15,8 @@ const RoomProps: React.FC<RoomProps> = (props: any) => {
   return (
     <>
       {rooms.map((room: any) => {
+        console.log(room);
+
         return (
           <div
             className="room_bar"
@@ -24,7 +26,7 @@ const RoomProps: React.FC<RoomProps> = (props: any) => {
             }}
           >
             <img src={room.avatar} alt="" />
-            <div className="user_name">{room.name}</div>
+            <div className="user_name">{room.roomName}</div>
             <div className="status">Online</div>
           </div>
         );

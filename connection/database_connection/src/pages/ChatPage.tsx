@@ -9,23 +9,11 @@ import * as io from "socket.io-client";
 
 export const socket: any = io.connect("http://localhost:5500");
 function Chat() {
-  const [roomID, setRoomID] = useState("");
-
-  function handleRoomIDChange(newRoomID: string): void {
-    setRoomID(newRoomID);
-  }
-
   return (
     <>
       <div className="screen">
-        <UserList
-          roomID={roomID}
-          onRoomIDChange={handleRoomIDChange}
-        ></UserList>
-        <ChatWindow
-          roomID={roomID}
-          onRoomIDChange={handleRoomIDChange}
-        ></ChatWindow>
+        <UserList></UserList>
+        <ChatWindow></ChatWindow>
         <RoomInfo></RoomInfo>
       </div>
     </>

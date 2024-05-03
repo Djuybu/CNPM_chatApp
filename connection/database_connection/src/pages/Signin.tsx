@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import "../styles.css";
 import image from "../assets/images.png";
 import { getUser } from "../database"; // Assuming getUser handles data fetching
-import { User } from "../User";
+import { User } from "../class/User";
 import { user } from "../App";
 import Signup from "./Signup";
 
@@ -42,7 +42,7 @@ function Signin() {
   } = useForm<FormFields>({
     defaultValues: {
       email: "macminhduy2004@gmail.com",
-      password: "123456789",
+      password: "macminhduy2k4",
     },
   });
 

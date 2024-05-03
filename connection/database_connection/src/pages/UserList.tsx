@@ -1,36 +1,98 @@
 import userImage from "../assets/bc3164193f40e047fc9ba13860c74b5a.webp";
 import Group from "../assets/group.png";
 import RoomProps from "../props/RoomProps";
+import ContactProps from "../props/ContactProps";
 import { user } from "../App";
-import { useState } from "react";
-import { socket } from "./Chat";
-
+import { Link, Route, Routes } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { socket } from "./ChatPage";
+import {
+  listUserWithName,
+  addContactToDatabase,
+  checkContact,
+  loadChatFromDatabase,
+} from "../database";
+import {
+  useCollection,
+  useCollectionData,
+} from "react-firebase-hooks/firestore";
+import { useSelector, useDispatch } from "react-redux";
+import { addRoom } from "../reducer/room.reducer";
+import { RootState, store } from "../state";
+import { Room } from "../class/Room";
+import { any } from "prop-types";
+import { changeActiveRoom } from "../reducer/activeRoom.reducer";
 interface UserListProps {
   roomID: string;
   onRoomIDChange: (newRoomID: string) => void;
 }
 
-function UserList({ roomID, onRoomIDChange }: UserListProps) {
+function UserList() {
+  const dispatch = useDispatch();
+  const [newUser, setNewUser] = useState("");
+  const [contacts, setContacts] = useState([]);
+  const [isContactWindow, setIsContactWindow] = useState(true);
+  const activeRoom = useSelector(
+    (state: RootState) => state.activeRoom.activeRoom
+  );
+
+  const rooms = useSelector((state: RootState) => state.room.roomList);
+  const setWindow = () => {};
+
+  const checkUser = (username: string) => {
+    if (!username) return false;
+    return true;
+  };
+
+  const loadContacts = async (data: string) => {
+    const list: any = await checkContact(data);
+    setContacts(list);
+  };
+
+  const handleContact: any = async (contact: any) => {
+    dispatch(changeActiveRoom(contact));
+  };
+
+  useEffect(() => {}, [contacts]);
+
   const handleChangeRoom = (newRoomID: string) => {
-    onRoomIDChange(newRoomID);
     socket.emit("join", newRoomID);
   };
 
-  const [rooms, setRooms] = useState([
-    { name: "Lmao", avatar: Group, id: "177013" },
-  ]);
   return (
     <>
       <div className="user_list">
-        <div className="user_bar">
+        <Link to={"/AccountSettings"} className="user_bar">
           <img src={userImage} alt="" />
           <div className="user_name">{user.getUsername()}</div>
-        </div>
+        </Link>
         <div className="search_bar">
           <img src="../assets/search.png" alt="" />
-          <input type="text" name="" id="" placeholder="Search for user" />
+          <form
+            action=""
+            onSubmit={(e: any) => {
+              e.preventDefault();
+              setIsContactWindow(false);
+              loadContacts(newUser);
+            }}
+          >
+            <input
+              onChange={(e: any) => {
+                setNewUser(e.target.value);
+              }}
+              type="text"
+              name=""
+              id=""
+              placeholder="Search for user"
+            />
+            <button type="submit">Add</button>
+          </form>
         </div>
-        <RoomProps room={rooms} onRoomIDChange={handleChangeRoom} />
+        {isContactWindow ? (
+          <RoomProps room={rooms} onRoomIDChange={handleChangeRoom} />
+        ) : (
+          <ContactProps onPropClick={handleContact} contacts={contacts} />
+        )}
       </div>
     </>
   );

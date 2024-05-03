@@ -7,6 +7,7 @@ import { log } from "console";
 const app = express(); // Initialize Express app
 const server = http.createServer(app); // Create HTTP server
 
+let user = 0;
 app.use(cors()); // Enable CORS middleware
 
 const io = new Server(server, {
@@ -19,16 +20,20 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log(`User ${socket.id} has connected!`);
+  user++;
+  console.log("user:", user);
 
   //send message
   socket.on("send_message", (data) => {
-    const room = data.roomID;
-    console.log(room);
-    socket.broadcast.to(room.roomID).emit("receive", data.chat);
+    console.log(data);
+    try {
+      socket.to(data.roomId).emit("receive", data);
+    } catch (error) {
+      console.log(error);
+    }
   });
 
   socket.on("join", (roomID) => {
-    console.log(roomID);
     socket.join(roomID); // Join the room
     console.log(
       `Joined successful! ID: ${socket.id} and the room id: ${roomID}`
@@ -37,5 +42,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(5500, () => {
-  console.log("LO CON CACCC"); // Log server startup message
+  console.log("CODE OI ANH YEU CODE"); // Log server startup message
 });
