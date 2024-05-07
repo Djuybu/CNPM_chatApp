@@ -50,12 +50,15 @@ function UserList() {
   };
 
   const handleContact: any = async (contact: any) => {
+    socket.emit("join", contact.roomId);
     dispatch(changeActiveRoom(contact));
   };
 
   useEffect(() => {}, [contacts]);
 
   const handleChangeRoom = (newRoomID: string) => {
+    console.log(newRoomID);
+
     socket.emit("join", newRoomID);
   };
 

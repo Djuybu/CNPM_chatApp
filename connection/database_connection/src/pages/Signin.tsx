@@ -93,6 +93,7 @@ function Signin() {
                 {errors.root && <div>{errors.root.message}</div>}
               </form>
             </div>
+            <Link to={"/Signup"}>Sign up here</Link>
             {/* ... rest of your code */}
           </div>
         </div>

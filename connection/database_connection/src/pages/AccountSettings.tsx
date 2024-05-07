@@ -20,9 +20,12 @@ type AccountForm = {
 
 function AccountSetting() {
   const onGeneralSubmit: SubmitHandler<AccountForm> = async (data) => {
-    data.avatar = file;
-    data.avatar = await getAvatarLink(file);
-
+    if (file) {
+      data.avatar = file;
+      data.avatar = await getAvatarLink(file);
+    } else {
+      data.avatar = "";
+    }
     //gửi dữ liệu lên csdl
     try {
       changeUserInfo(data, user.getId());
@@ -36,7 +39,6 @@ function AccountSetting() {
     changePassword(data.password, user.getId());
   };
 
-  const [isEditing, setIsEditing] = useState(false);
   const [file, setFile] = useState();
   const [formType, setFormType] = useState("general");
   const {
@@ -44,7 +46,16 @@ function AccountSetting() {
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<AccountForm>();
+  } = useForm<AccountForm>({
+    defaultValues: {
+      username: user.getUsername(),
+      address: user.getAddress(),
+      email: user.getEmail(),
+      password: user.getPassword(),
+      phone: user.getPhone(),
+      gender: user.getGender(),
+    },
+  });
   return (
     <>
       <link
@@ -122,7 +133,6 @@ function AccountSetting() {
                       <input
                         type="text"
                         className="form-control mb-1"
-                        value={user.getUsername()}
                         {...register("username")}
                       />
                     </div>
@@ -131,7 +141,6 @@ function AccountSetting() {
                       <input
                         type="text"
                         className="form-control mb-1"
-                        value={user.getEmail()}
                         {...register("email")}
                       />
                       <div className="alert alert-warning mt-3">
@@ -144,7 +153,6 @@ function AccountSetting() {
                       <input
                         type="text"
                         className="form-control"
-                        value={user.getPhone()}
                         {...register("phone")}
                       />
                     </div>
@@ -153,7 +161,6 @@ function AccountSetting() {
                       <input
                         type="text"
                         className="form-control"
-                        value={user.getAddress()}
                         {...register("address")}
                       />
                     </div>
@@ -162,7 +169,6 @@ function AccountSetting() {
                       <input
                         type="text"
                         className="form-control"
-                        value={user.getGender()}
                         {...register("gender")}
                       />
                     </div>

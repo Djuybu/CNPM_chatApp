@@ -50,6 +50,8 @@ function ChatWindow() {
   // Listens for incoming chat messages
   useEffect(() => {
     const handleReceiveMessage = (data: any) => {
+      console.log("Data");
+
       dispatch(addChat(data.newChat));
     };
 
