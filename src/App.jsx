@@ -3,7 +3,7 @@ import List from "./components/List/list.tsx";
 import Detail from "./components/detail/detail.tsx";
 import Login from "./components/login/login.tsx";
 const App = () => {
-  const user = false
+  const user = true;
 
   return (
       <div className='container'>
