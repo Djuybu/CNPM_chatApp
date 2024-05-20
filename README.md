@@ -1,70 +1,351 @@
-# Getting Started with Create React App
+# Connecting to the VPS
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+To connect your VPS server, you can use your server IP, you can create a root password and enter the server with your IP address and password credentials. But the more secure way is using an SSH key.
 
-## Available Scripts
+## Creating SSH Key
 
-In the project directory, you can run:
+### For MAC OS / Linux / Windows 10 (with openssh)
 
-### `npm start`
+1. Launch the Terminal app.
+2. ```ssh-keygen -t rsa```
+3. Press ```ENTER``` to store the key in the default folder /Users/lamadev/.ssh/id_rsa).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+4. Type a passphrase (characters will not appear in the terminal).
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+5. Confirm your passphrase to finish SSH Keygen. You should get an output that looks something like this:
 
-### `npm test`
+``` Your identification has been saved in /Users/lamadev/.ssh/id_rsa.
+Your public key has been saved in /Users/lamadev/.ssh/id_rsa.pub.
+The key fingerprint is:
+ae:89:72:0b:85:da:5a:f4:7c:1f:c2:43:fd:c6:44:30 lamadev@mac.local
+The key's randomart image is:
++--[ RSA 2048]----+
+|                 |
+|         .       |
+|        E .      |
+|   .   . o       |
+|  o . . S .      |
+| + + o . +       |
+|. + o = o +      |
+| o...o * o       |
+|.  oo.o .        |
++-----------------+ 
+```
+6. Copy your public SSH Key to your clipboard using the following code:
+```pbcopy < ~/.ssh/id_rsa.pub```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### For Windows
+1. Download PuTTY and PuTTYgen.
+2. Open up PuTTYgen and click the ```Generate```.
+3. Copy your key.
+4. Enter a key passphrase and confirm.
+5. Save the private key.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Connection
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+After copying the SSH Key go the to hosting service provider dashboard and paste your key and save. After,
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### For MAC OS / Linux
 
-### `npm run eject`
+```bash
+ssh root@<server ip address> 
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### For Windows
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Open the PuTTY app.
+2. Enter your IP address.
+3. Open the following section:
+Connection - SSH - Auth
+4. Browse the folders and choose your private key.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## First Configuration
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Deleting apache server
 
-## Learn More
+```
+systemctl stop apache2
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+systemctl disable apache2
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+apt remove apache2
+```
 
-### Code Splitting
+to delete related dependencies:
+```
+apt autoremove
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Cleaning and updating server
+```
+apt clean all && sudo apt update && sudo apt dist-upgrade
+```
 
-### Analyzing the Bundle Size
+```
+rm -rf /var/www/html
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Installing Nginx
 
-### Making a Progressive Web App
+```
+apt install nginx
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Installing and configure Firewall
 
-### Advanced Configuration
+```
+apt install ufw
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```
+ufw enable
+```
 
-### Deployment
+```
+ufw allow "Nginx Full"
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## First Page
 
-### `npm run build` fails to minify
+#### Delete the default server configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```
+ rm /etc/nginx/sites-available/default
+```
+
+```
+ rm /etc/nginx/sites-enabled/default
+```
+
+#### First configuration
+```
+ nano /etc/nginx/sites-available/netflix
+```
+```
+server {
+  listen 80;
+
+  location / {
+        root /var/www/netflix;
+        index  index.html index.htm;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        try_files $uri $uri/ /index.html;
+  }
+}
+
+```
+
+```
+ln -s /etc/nginx/sites-available/netflix /etc/nginx/sites-enabled/netflix
+
+```
+
+##### Write your fist message
+```
+nano /var/www/netflix/index.html
+
+```
+
+##### Start Nginx and check the page
+
+```
+systemctl start nginx
+```
+
+## Uploading Apps Using Git
+
+```
+apt install git
+```
+
+```
+mkdir netflix
+```
+```
+cd netflix
+```
+
+```
+git clone <your repository>
+```
+
+## Nginx Configuration for new apps
+```
+nano /etc/nginx/sites-available/netflix
+```
+```
+location /api {
+        proxy_pass http://45.90.108.107:8800;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+  }
+```
+
+##### If you check the location /api you are going to get "502" error which is good. Our configuration works. The only thing we need to is running our app
+
+```
+apt install nodejs
+```
+
+```
+apt install npm
+```
+
+```
+cd api
+```
+```
+npm install
+```
+```
+nano .env
+```
+##### Copy and paste your env file
+```
+node index.js
+```
+
+#### But if you close your ssh session here. It's gonna kill this process. To prevent this we are going to need a package which is called ```pm2```
+```
+npm i -g pm2
+```
+Let's create a new pm2 instance
+
+```
+pm2 start --name api index.js   
+```
+```
+pm2 startup ubuntu 
+```
+
+## React App Deployment
+
+```
+cd ../client
+```
+
+```
+nano .env
+```
+Paste your env file.
+
+```
+npm i
+```
+Let's create the build file
+
+```
+npm run build
+```
+
+Right now, we should move this build file into the main web file
+
+```
+rm -rf /var/www/netflix/*
+```
+```
+mkdir /var/www/netflix/client
+```
+
+```
+cp -r build/* /var/www/netflix/client
+```
+
+Let's make some server configuration
+```
+ location / {
+        root /var/www/netflix/client/;
+        index  index.html index.htm;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        try_files $uri $uri/ /index.html;
+  }
+
+```
+### Adding Domain
+1 - Make sure that you created your A records on your domain provider website.
+
+2 - Change your pathname from Router
+
+3 - Change your env files and add the new API address 
+
+4 - Add the following server config
+```
+server {
+ listen 80;
+ server_name safakkocaoglu.com www.safakkocaoglu.com;
+
+location / {
+ root /var/www/netflix/client;
+ index  index.html index.htm;
+ proxy_http_version 1.1;
+ proxy_set_header Upgrade $http_upgrade;
+ proxy_set_header Connection 'upgrade';
+ proxy_set_header Host $host;
+ proxy_cache_bypass $http_upgrade;
+ try_files $uri $uri/ /index.html;
+}
+}
+
+server {
+  listen 80;
+  server_name api.safakkocaoglu.com;
+  location / {
+    proxy_pass http://45.90.108.107:8800;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+    }
+}
+
+server {
+  listen 80;
+  server_name admin.safakkocaoglu.com;
+  location / {
+    root /var/www/netflix/admin;
+    index  index.html index.htm;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+    try_files $uri $uri/ /index.html;
+  }
+}
+```
+
+## SSL Certification
+```
+apt install certbot python3-certbot-nginx
+```
+
+Make sure that Nginx Full rule is available
+```
+ufw status
+```
+
+```
+certbot --nginx -d example.com -d www.example.com
+```
+
+Let’s Encrypt’s certificates are only valid for ninety days. To set a timer to validate automatically:
+```
+systemctl status certbot.timer
+```
